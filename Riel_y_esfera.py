@@ -107,8 +107,8 @@ try:
         ax.legend()
         
         fig.show()  
-except(exception):
-    print(exception)    
+except Exception as exc:
+    print(exc)    
     print("No se puede calcular el alcance del proyectil")
     
     
