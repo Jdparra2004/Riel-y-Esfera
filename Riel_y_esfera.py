@@ -36,6 +36,7 @@ print(Bienvenida)
 print(Grafica, Funcionamiento, Tiro_parabolico, angulo_salida)
 print(Datos_no_dados, aclaracion, recordar)
 print(copy, link)
+print("todos los datos deberán ser ingresados en metros, el uso decimales será con el punto")
 
 #Datos pedidos al usuario y dados
 hA = float(input("Ingresa el valor de la altura al punto A: "))
@@ -46,7 +47,7 @@ v = float(input("Ingrese valor de la velocidad que se obtiene en el tramo AB(de 
 angulo = float(input("Ingrese el valor del angulo de salida en el punto B: "))
 tmax = float(input("Ingrese el valor del tiempo de caida del proyectil desde el punto B(de no tenerlo, poner 0): "))
 Xmax = float(input("Ingrese alcance max de la caida del proyectil,(valor a calcular, poner 0): "))
-
+hf = float(input("Ingrese altura final del proyectil: "))
 #Xi corresponderá a 0, dado que es el punto en el cuál sale la esfera del punto B
 Xi = 0
 
@@ -78,6 +79,9 @@ try:
     #h3 es la altura del suelo, a la base del riel, la cual puede ser 0, pero se el limite de caida, para el eje Y
     if h3 == None:
         h3 = 0
+        
+    if hf == None:
+        hf = 0
     
     #El angulo de salida puede ser cero, pero se ha de tener en cuenta la logica mátematica, y se define alpha, para la parte
     #operacional
@@ -103,6 +107,7 @@ try:
     #Y la altura a usar, va a ser hB + h3
     
     h = hB + h3
+   
     
     #Este tiempo a calcular, es el tiempo de caida, del proyectil desde el punto B.
     #Else: desarrolla tiro parabolico.
@@ -110,31 +115,49 @@ try:
     
     if raiz_t < 0:
         print("\nNo se puede calcular el tiempo de vuelo, dado que es una raiz negativa")
-    
+    #Tiempo de vuelo y gráficación
     else:
+        #Hallar tiempo
         tmax2 = ((v * sin(alpha) + raiz_t)/180)
-        t = np.arrange(0, tmax2+tmax/50, tmax2/50)
+        #rango de tiempo
+        t = np.arange(0, tmax2+tmax/50, tmax2/50)
         
         
-     
-    '''
-    if t_r == None:
-        t_r = ((v * np.sin(alpha) + raiz_t)/180)
-        if t_r < 0:
-            t_r = ((v * np.sin(alpha) - raiz_t)/180)
-        else: 
-            t_r < 0
-            print("no se puede calcular tiempo de vuelo de la esfera.")
-    else:
-        if Xmax == None:
-            Xmax =  v * np.cos(alpha) * t_r
-            
-    '''
-
+        #Velocidad y alcance en X
+        Vx = v*cos(alpha)
+        X = (Xi + (Vx*t))
+        Xmax = (((v**2)*(2*cos(alpha)*sin(alpha))) / g)
         
-    
+        #Velocidad y alcance en Y
+        Vy = (v*sin(alpha) - (g*t))
+        Y = (((v*sin(alpha)*t) - (0.5*g*t**2)) + h)
+        Ymax = ((((v**2)*(sin(alpha)**2)) / (2*g)) + h)
         
+        #tiempo de altura maxima  en X, Y
+        tHmax =((v*sin(alpha))/g)
+        xHmax = Xi + (Vx*tHmax)
         
+        #tiempo de alcance en X
+        tXmax = tmax2
+        xXmax = v*cos(alpha)*tmax2
+        
+        #Desarrollo grafica y correspondiente de funciones
+        fig, ax = plt.subplots(1,1, figsize = (15,5))
+        ax.plt.scatter(X, Y, 'K--', lw=3)
+        #indicador trayectoria
+        ax.set_xlabel("Trayectoria (x,y)", fontsize = 25)
+        ax.set_xlabel('x [m]', fontsize = 16)
+        ax.set_ylabel('y [m]', fontsize = 16)
+        ax.grid(True, which = 'both')
+        #indicador de datos para altura, distancia, velocidad, y posición      
+        ax.plot(xHmax, Ymax, 's', lw = 4, label = (f'Altura Max: ({np.arround(xHmax, 2)}, {np.arround(Ymax, 2)})') )
+        ax.plot(xXmax, hf, 'o', lw = 4, label = f'Distancia Max: ({np.arround(xXmax, 2)}, {hf}')
+        ax.plot(Xi, h, 'v', lw = 4, label = f'Posición inicial: ({Xi}, {h})')
+        ax.plot(lw = 4, label = f'Velocidad Generada: ({np.round(v, 2)})')
+        ax.legend()
+        
+        #mostrar figura
+        fig.show       
 except Exception as exc:
     print(exc)
     print("No es posible calcular el alcance máximo de la esfera")
