@@ -1,7 +1,8 @@
 from cmath import sqrt
 import tkinter
 import numpy as np
-import matplotlib.pyplot as plt 
+import matplotlib as plt
+import matplotlib.pyplot as plt
 from math import sin, sqrt, pi
 from math import *
 
@@ -73,8 +74,8 @@ try:
         hB = 0
     
     #si A es < que B en altura, la raiz de velocidad dará negativo, y no será posible calcular la velocidad
-    if hA < hB:
-        print("\nNo se puede ejecutar el software, dado que la velocidad no será la necesaria, para salir del riel en el punto B")
+        if hA < hB:
+            print("\nNo se puede ejecutar el software, dado que la velocidad no será la necesaria, para salir del riel en el punto B")
     
     #h3 es la altura del suelo, a la base del riel, la cual puede ser 0, pero se el limite de caida, para el eje Y
     if h3 == None:
@@ -118,7 +119,7 @@ try:
     #Tiempo de vuelo y gráficación
     else:
         #Hallar tiempo
-        tmax2 = ((v * sin(alpha) + raiz_t)/180)
+        tmax2 = (((v*np.sin(alpha)) + (np.sqrt(((v**2)*(np.sin(alpha)**2)) - (2*g*hf) + (2*g*h)))) / g)
         #rango de tiempo
         t = np.arange(0, tmax2+tmax/50, tmax2/50)
         
@@ -139,30 +140,26 @@ try:
         
         #tiempo de alcance en X
         tXmax = tmax2
-        xXmax = v*cos(alpha)*tmax2
+        xXmax = Xi + (Vx*tmax2)
         
         #Desarrollo grafica y correspondiente de funciones
-        fig, ax = plt.subplots(1,1, figsize = (15,5))
-        ax.plt.scatter(X, Y, 'K--', lw=3)
+
+        plt.subplot(1,1,1)
+        plt.plot(X, Y, 'red', "k--", lw=3)
         #indicador trayectoria
-        ax.set_xlabel("Trayectoria (x,y)", fontsize = 25)
-        ax.set_xlabel('x [m]', fontsize = 16)
-        ax.set_ylabel('y [m]', fontsize = 16)
-        ax.grid(True, which = 'both')
-        #indicador de datos para altura, distancia, velocidad, y posición      
-        ax.plot(xHmax, Ymax, 's', lw = 4, label = (f'Altura Max: ({np.arround(xHmax, 2)}, {np.arround(Ymax, 2)})') )
-        ax.plot(xXmax, hf, 'o', lw = 4, label = f'Distancia Max: ({np.arround(xXmax, 2)}, {hf}')
-        ax.plot(Xi, h, 'v', lw = 4, label = f'Posición inicial: ({Xi}, {h})')
-        ax.plot(lw = 4, label = f'Velocidad Generada: ({np.round(v, 2)})')
-        ax.legend()
+        plt.xlabel("Trayectoria (x,y)", fontsize = 25)
+        plt.xlabel('x [m]', fontsize = 16)
+        plt.ylabel('y [m]', fontsize = 16)
+        plt.grid(True, which = 'both')
+        #indicador de datos para altura, distancia, velocidad, y posición  
+        plt.plot(xHmax, Ymax, 's', lw = 4, label = (f'Altura Max: ({np.round(xHmax, 2)}, {np.round(Ymax, 2)})') )
+        plt.plot(xXmax, hf, 'o', lw = 4, label = f'Distancia Max: ({np.round(xXmax, 2)}, {hf}')
+        plt.plot(Xi, h, 'v', lw = 4, label = f'Posición inicial: ({Xi}, {h})')
+        plt.plot(lw = 4, label = f'Velocidad Generada: ({np.round(v, 2)})')
+        plt.legend()
         
         #mostrar figura
-        fig.show       
+        plt.show()       
 except Exception as exc:
     print(exc)
     print("No es posible calcular el alcance máximo de la esfera")
-    
-#ventana de apertura, para terminal.
-
-ventana = tkinter.Tk()
-ventana.mainloop()
